@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STONKS - Trading Platform | Joe Leto</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            color: white;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Glass Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-card-hover {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .glass-card-hover:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Modern Button */
+        .modern-button {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #10b981, #14b8a6);
+            border: none;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .modern-button:hover {
+            background: linear-gradient(135deg, #059669, #0d9488);
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+        }
+
+        .modern-button:active {
+            transform: scale(0.95);
+        }
+
+        .modern-button-danger {
+            background: linear-gradient(135deg, #ef4444, #f43f5e);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .modern-button-danger:hover {
+            background: linear-gradient(135deg, #dc2626, #e11d48);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
+        }
+
+        .modern-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Modern Input */
+        .modern-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .modern-input:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+
+        /* Ticker animation */
+        .ticker {
+            animation: ticker 40s linear infinite;
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* Glow effects */
+        .glow-green {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .glow-red {
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+        }
+
+        /* Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1000;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 600;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-50px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Chart container */
+        .chart-container {
+            height: 350px;
+            width: 100%;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .grid-cols-12 {
+                grid-template-columns: 1fr;
+            }
+            
+            .col-span-2, .col-span-7, .col-span-3 {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen p-6 relative">
+        <!-- Background Effects -->
+        <div class="fixed inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 -z-10"></div>
+        <div class="fixed inset-0 opacity-10 -z-10">
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-500 rounded-full filter blur-[128px] animate-pulse"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-teal-500 rounded-full filter blur-[128px] animate-pulse" style="animation-delay: 1s;"></div>
+        </div>
+
+        <!-- Top Bar -->
+        <div class="glass-card p-4 mb-6">
+            <div class="flex items-center justify-between">
+                <!-- Left: Logo & Title -->
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+                            STONKS
+                        </h1>
+                        <p class="text-xs text-white/50">Trading Platform</p>
+                    </div>
+                </div>
+
+                <!-- Center: Stats -->
+                <div class="flex gap-4">
+                    <div class="glass-card-hover px-4 py-2 rounded-xl min-w-[140px]">
+                        <div class="text-xs text-white/50 mb-1">Cash</div>
+                        <div class="text-lg font-bold text-emerald-400" id="cashDisplay">$10,000.00</div>
+                    </div>
+                    <div class="glass-card-hover px-4 py-2 rounded-xl min-w-[140px]">
+                        <div class="text-xs text-white/50 mb-1">Portfolio</div>
+                        <div class="text-lg font-bold text-teal-400" id="portfolioDisplay">$0.00</div>
+                    </div>
+                    <div class="glass-card-hover px-4 py-2 rounded-xl min-w-[140px]">
+                        <div class="text-xs text-white/50 mb-1">Total</div>
+                        <div class="text-lg font-bold text-cyan-400" id="totalDisplay">$10,000.00</div>
+                    </div>
+                    <div class="glass-card-hover px-4 py-2 rounded-xl min-w-[140px]">
+                        <div class="text-xs text-white/50 mb-1">P/L</div>
+                        <div class="text-lg font-bold text-emerald-400" id="plDisplay">+$0.00 (0.0%)</div>
+                    </div>
+                </div>
+
+                <!-- Right: Controls -->
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-white/60">Speed:</span>
+                        <button onclick="setGameSpeed(1)" class="px-3 py-1 rounded-lg text-sm font-semibold transition-all bg-emerald-500 text-white" id="speed1">1x</button>
+                        <button onclick="setGameSpeed(2)" class="px-3 py-1 rounded-lg text-sm font-semibold transition-all bg-white/5 text-white/60 hover:bg-white/10" id="speed2">2x</button>
+                        <button onclick="setGameSpeed(5)" class="px-3 py-1 rounded-lg text-sm font-semibold transition-all bg-white/5 text-white/60 hover:bg-white/10" id="speed5">5x</button>
+                        <button onclick="setGameSpeed(10)" class="px-3 py-1 rounded-lg text-sm font-semibold transition-all bg-white/5 text-white/60 hover:bg-white/10" id="speed10">10x</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="grid grid-cols-12 gap-6">
+            <!-- Left: Market/News/Portfolio -->
+            <div class="col-span-2 space-y-4">
+                <!-- View Switcher -->
+                <div class="glass-card p-2 flex gap-2">
+                    <button onclick="setActiveView('market')" class="flex-1 py-2 rounded-lg flex items-center justify-center gap-2 transition-all bg-emerald-500 text-white" id="marketBtn">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        <span class="text-sm font-semibold">Market</span>
+                    </button>
+                    <button onclick="setActiveView('news')" class="flex-1 py-2 rounded-lg flex items-center justify-center gap-2 transition-all bg-transparent text-white/60 hover:bg-white/5" id="newsBtn">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                        </svg>
+                        <span class="text-sm font-semibold">News</span>
+                    </button>
+                    <button onclick="setActiveView('portfolio')" class="flex-1 py-2 rounded-lg flex items-center justify-center gap-2 transition-all bg-transparent text-white/60 hover:bg-white/5" id="portfolioBtn">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                        </svg>
+                        <span class="text-sm font-semibold">Portfolio</span>
+                    </button>
+                </div>
+
+                <!-- Content -->
+                <div class="glass-card p-4 h-[700px] overflow-y-auto custom-scrollbar">
+                    <!-- Market View -->
+                    <div id="marketView" class="space-y-2">
+                        <!-- Stocks will be populated here -->
+                    </div>
+
+                    <!-- News View -->
+                    <div id="newsView" class="space-y-3" style="display: none;">
+                        <div class="text-center py-12 text-white/40">
+                            <svg class="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                            </svg>
+                            <p>No news yet...</p>
+                            <p class="text-xs">Breaking news will appear here</p>
+                        </div>
+                    </div>
+
+                    <!-- Portfolio View -->
+                    <div id="portfolioView" class="space-y-3" style="display: none;">
+                        <div class="text-center py-12 text-white/40">
+                            <svg class="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                            </svg>
+                            <p>No positions yet</p>
+                            <p class="text-xs">Start trading to build your portfolio</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center: Chart & Trading -->
+            <div class="col-span-7 space-y-4">
+                <!-- Chart -->
+                <div class="glass-card p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h2 class="text-2xl font-bold" id="chartTitle">Select a Stock</h2>
+                            <p class="text-sm text-white/50" id="chartSubtitle">Choose from the market list</p>
+                        </div>
+                        <div class="text-right" id="stockPrice" style="display: none;">
+                            <div class="text-4xl font-bold" id="currentPrice">$0.00</div>
+                            <div class="text-lg font-bold" id="priceChange">+$0.00 (0.00%)</div>
+                        </div>
+                    </div>
+
+                    <!-- Chart Controls -->
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="flex gap-2">
+                            <button onclick="setChartType('area')" class="px-3 py-2 rounded-lg flex items-center gap-2 transition-all bg-emerald-500 text-white" id="areaBtn">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                </svg>
+                                <span class="text-xs font-semibold">Area</span>
+                            </button>
+                            <button onclick="setChartType('line')" class="px-3 py-2 rounded-lg flex items-center gap-2 transition-all bg-white/5 text-white/60 hover:bg-white/10" id="lineBtn">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                                <span class="text-xs font-semibold">Line</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Chart Area -->
+                    <div class="chart-container flex items-center justify-center text-white/40" id="chartArea">
+                        <div class="text-center">
+                            <svg class="w-16 h-16 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                            </svg>
+                            <p>Select a stock to view chart</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trading Panel -->
+                <div class="glass-card p-6" id="tradingPanel" style="display: none;">
+                    <h3 class="text-xl font-bold mb-4" id="tradingTitle">Trade Stock</h3>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="glass-card-hover p-4 rounded-xl">
+                            <div class="text-xs text-white/50 mb-1">Day High</div>
+                            <div class="text-lg font-bold text-emerald-400" id="dayHigh">$0.00</div>
+                        </div>
+                        <div class="glass-card-hover p-4 rounded-xl">
+                            <div class="text-xs text-white/50 mb-1">Day Low</div>
+                            <div class="text-lg font-bold text-red-400" id="dayLow">$0.00</div>
+                        </div>
+                        <div class="glass-card-hover p-4 rounded-xl">
+                            <div class="text-xs text-white/50 mb-1">Volume</div>
+                            <div class="text-lg font-bold" id="volume">0K</div>
+                        </div>
+                        <div class="glass-card-hover p-4 rounded-xl">
+                            <div class="text-xs text-white/50 mb-1">Market Cap</div>
+                            <div class="text-lg font-bold" id="marketCap">$0M</div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Number of Shares</label>
+                            <input type="number" min="1" value="1" id="tradeShares" class="modern-input w-full text-lg font-mono">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <div class="text-white/50">Total Cost</div>
+                                <div class="text-xl font-bold" id="totalCost">$0.00</div>
+                            </div>
+                            <div>
+                                <div class="text-white/50">Available</div>
+                                <div class="text-xl font-bold text-emerald-400" id="availableCash">$10,000.00</div>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-3 pt-4">
+                            <button onclick="buyStock()" class="flex-1 modern-button py-4 text-lg" id="buyBtn">
+                                <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                                </svg>
+                                BUY
+                            </button>
+                            <button onclick="sellStock()" class="flex-1 modern-button-danger py-4 text-lg" id="sellBtn" disabled>
+                                <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                                </svg>
+                                SELL
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: X Feed -->
+            <div class="col-span-3 h-[860px]">
+                <div class="glass-card p-4 h-full">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+                        </svg>
+                        X Feed
+                    </h3>
+                    <div class="space-y-3 custom-scrollbar overflow-y-auto h-full">
+                        <div class="text-center py-12 text-white/40">
+                            <svg class="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                            </svg>
+                            <p>No tweets yet...</p>
+                            <p class="text-xs">Market chatter will appear here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Ticker -->
+        <div class="fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-xl border-t border-white/10 overflow-hidden">
+            <div class="ticker whitespace-nowrap py-3 text-sm font-mono" id="ticker">
+                <!-- Ticker content will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        let gameState = {
+            player: {
+                cash: 10000.00,
+                portfolioValue: 0,
+                totalValue: 10000.00
+            },
+            positions: [],
+            transactions: [],
+            stocks: [
+                {
+                    id: '1',
+                    symbol: 'PEAR',
+                    name: 'Pear Inc. 🍐',
+                    price: 180.00,
+                    previousPrice: 178.50,
+                    change: 1.50,
+                    changePercent: 0.84,
+                    volume: 4250000,
+                    dayHigh: 182.30,
+                    dayLow: 177.80,
+                    marketCap: 2800000000,
+                    sector: 'tech',
+                    volatility: 0.04,
+                    trend: 'bullish'
+                },
+                {
+                    id: '2',
+                    symbol: 'AMZN',
+                    name: 'Amazing.com 📦',
+                    price: 145.50,
+                    previousPrice: 146.20,
+                    change: -0.70,
+                    changePercent: -0.48,
+                    volume: 3980000,
+                    dayHigh: 147.00,
+                    dayLow: 144.90,
+                    marketCap: 1500000000,
+                    sector: 'consumer',
+                    volatility: 0.05,
+                    trend: 'bearish'
+                },
+                {
+                    id: '3',
+                    symbol: 'TSLA',
+                    name: 'Tezla Motors ⚡',
+                    price: 242.30,
+                    previousPrice: 232.10,
+                    change: 10.20,
+                    changePercent: 4.39,
+                    volume: 8650000,
+                    dayHigh: 245.50,
+                    dayLow: 231.80,
+                    marketCap: 750000000,
+                    sector: 'industrial',
+                    volatility: 0.09,
+                    trend: 'bullish'
+                },
+                {
+                    id: '4',
+                    symbol: 'GOOG',
+                    name: 'Googol Search 🔍',
+                    price: 138.75,
+                    previousPrice: 140.25,
+                    change: -1.50,
+                    changePercent: -1.07,
+                    volume: 2100000,
+                    dayHigh: 141.00,
+                    dayLow: 137.00,
+                    marketCap: 1700000000,
+                    sector: 'tech',
+                    volatility: 0.04,
+                    trend: 'bearish'
+                },
+                {
+                    id: '5',
+                    symbol: 'META',
+                    name: 'Zuck\'s Book 📘',
+                    price: 315.80,
+                    previousPrice: 318.50,
+                    change: -2.70,
+                    changePercent: -0.85,
+                    volume: 1720000,
+                    dayHigh: 320.20,
+                    dayLow: 314.50,
+                    marketCap: 800000000,
+                    sector: 'tech',
+                    volatility: 0.06,
+                    trend: 'bearish'
+                },
+                {
+                    id: '6',
+                    symbol: 'NVDA',
+                    name: 'NVidea Chips 🎮',
+                    price: 498.40,
+                    previousPrice: 487.80,
+                    change: 10.60,
+                    changePercent: 2.17,
+                    volume: 5850000,
+                    dayHigh: 502.50,
+                    dayLow: 485.00,
+                    marketCap: 1200000000,
+                    sector: 'tech',
+                    volatility: 0.08,
+                    trend: 'bullish'
+                },
+                {
+                    id: '7',
+                    symbol: 'GME',
+                    name: 'GameStop 🚀',
+                    price: 18.90,
+                    previousPrice: 15.50,
+                    change: 3.40,
+                    changePercent: 21.94,
+                    volume: 12100000,
+                    dayHigh: 22.80,
+                    dayLow: 15.20,
+                    marketCap: 75000000,
+                    sector: 'consumer',
+                    volatility: 0.15,
+                    trend: 'bullish'
+                },
+                {
+                    id: '8',
+                    symbol: 'X',
+                    name: 'X (formerly Twitter) 🐦',
+                    price: 43.20,
+                    previousPrice: 54.80,
+                    change: -11.60,
+                    changePercent: -21.17,
+                    volume: 9540000,
+                    dayHigh: 55.50,
+                    dayLow: 42.90,
+                    marketCap: 44000000,
+                    sector: 'tech',
+                    volatility: 0.12,
+                    trend: 'bearish'
+                }
+            ],
+            selectedStock: null,
+            activeView: 'market',
+            gameSpeed: 1,
+            priceHistory: {}
+        };
+
+        // Initialize the game
+        function initGame() {
+            updateDisplay();
+            renderMarket();
+            updateTicker();
+            startPriceUpdates();
+        }
+
+        // Update stock prices
+        function updateStockPrices() {
+            gameState.stocks.forEach(stock => {
+                const changePercent = (Math.random() - 0.5) * 2 * stock.volatility * 100;
+                const priceChange = (stock.price * changePercent) / 100;
+                let newPrice = stock.price + priceChange;
+                
+                newPrice = Math.max(newPrice, stock.price * 0.5);
+                
+                const change = newPrice - stock.previousPrice;
+                const changePercentValue = (change / stock.previousPrice) * 100;
+
+                stock.previousPrice = stock.price;
+                stock.price = newPrice;
+                stock.change = change;
+                stock.changePercent = changePercentValue;
+                stock.dayHigh = Math.max(stock.dayHigh, newPrice);
+                stock.dayLow = Math.min(stock.dayLow, newPrice);
+                stock.volume += Math.floor(Math.random() * 10000);
+            });
+
+            updateDisplay();
+            renderMarket();
+            updateTicker();
+        }
+
+        // Start price updates
+        function startPriceUpdates() {
+            setInterval(updateStockPrices, 3000 / gameState.gameSpeed);
+        }
+
+        // Set game speed
+        function setGameSpeed(speed) {
+            gameState.gameSpeed = speed;
+            document.querySelectorAll('[id^="speed"]').forEach(btn => {
+                btn.className = 'px-3 py-1 rounded-lg text-sm font-semibold transition-all bg-white/5 text-white/60 hover:bg-white/10';
+            });
+            document.getElementById(`speed${speed}`).className = 'px-3 py-1 rounded-lg text-sm font-semibold transition-all bg-emerald-500 text-white';
+        }
+
+        // Set active view
+        function setActiveView(view) {
+            gameState.activeView = view;
+            
+            // Update buttons
+            document.querySelectorAll('[id$="Btn"]').forEach(btn => {
+                btn.className = btn.className.replace('bg-emerald-500 text-white', 'bg-transparent text-white/60 hover:bg-white/5');
+            });
+            document.getElementById(`${view}Btn`).className = document.getElementById(`${view}Btn`).className.replace('bg-transparent text-white/60 hover:bg-white/5', 'bg-emerald-500 text-white');
+            
+            // Show/hide views
+            document.getElementById('marketView').style.display = view === 'market' ? 'block' : 'none';
+            document.getElementById('newsView').style.display = view === 'news' ? 'block' : 'none';
+            document.getElementById('portfolioView').style.display = view === 'portfolio' ? 'block' : 'none';
+        }
+
+        // Set chart type
+        function setChartType(type) {
+            document.querySelectorAll('[id$="Btn"]').forEach(btn => {
+                if (btn.id.includes('area') || btn.id.includes('line')) {
+                    btn.className = btn.className.replace('bg-emerald-500 text-white', 'bg-white/5 text-white/60 hover:bg-white/10');
+                }
+            });
+            document.getElementById(`${type}Btn`).className = document.getElementById(`${type}Btn`).className.replace('bg-white/5 text-white/60 hover:bg-white/10', 'bg-emerald-500 text-white');
+        }
+
+        // Render market
+        function renderMarket() {
+            const marketView = document.getElementById('marketView');
+            marketView.innerHTML = gameState.stocks.map(stock => `
+                <div onclick="selectStock('${stock.id}')" class="p-2 rounded-xl cursor-pointer transition-all ${gameState.selectedStock === stock.id ? 'bg-emerald-500/20 border border-emerald-500/50' : 'bg-white/5 hover:bg-white/10'}">
+                    <div class="flex justify-between items-start mb-1">
+                        <div class="min-w-0 flex-1">
+                            <div class="font-bold text-sm">${stock.symbol}</div>
+                            <div class="text-xs text-white/50 truncate">${stock.name}</div>
+                        </div>
+                        ${stock.trend === 'bullish' ? '<svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>' : ''}
+                        ${stock.trend === 'bearish' ? '<svg class="w-4 h-4 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path></svg>' : ''}
+                    </div>
+                    <div class="flex justify-between items-end">
+                        <div class="text-lg font-bold">$${stock.price.toFixed(2)}</div>
+                        <div class="text-xs font-bold ${stock.change >= 0 ? 'text-emerald-400' : 'text-red-400'}">
+                            ${stock.change >= 0 ? '+' : ''}${stock.changePercent.toFixed(2)}%
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Select stock
+        function selectStock(stockId) {
+            gameState.selectedStock = stockId;
+            const stock = gameState.stocks.find(s => s.id === stockId);
+            
+            if (stock) {
+                document.getElementById('chartTitle').textContent = stock.symbol;
+                document.getElementById('chartSubtitle').textContent = stock.name;
+                document.getElementById('currentPrice').textContent = `$${stock.price.toFixed(2)}`;
+                document.getElementById('priceChange').textContent = `${stock.change >= 0 ? '+' : ''}$${stock.change.toFixed(2)} (${stock.changePercent.toFixed(2)}%)`;
+                document.getElementById('priceChange').className = `text-lg font-bold ${stock.change >= 0 ? 'text-emerald-400' : 'text-red-400'}`;
+                document.getElementById('stockPrice').style.display = 'block';
+                document.getElementById('tradingPanel').style.display = 'block';
+                document.getElementById('tradingTitle').textContent = `Trade ${stock.symbol}`;
+                document.getElementById('dayHigh').textContent = `$${stock.dayHigh.toFixed(2)}`;
+                document.getElementById('dayLow').textContent = `$${stock.dayLow.toFixed(2)}`;
+                document.getElementById('volume').textContent = `${(stock.volume / 1000).toFixed(0)}K`;
+                document.getElementById('marketCap').textContent = `$${(stock.marketCap / 1000000).toFixed(0)}M`;
+                
+                updateTradingPanel();
+            }
+            
+            renderMarket();
+        }
+
+        // Update trading panel
+        function updateTradingPanel() {
+            const stock = gameState.stocks.find(s => s.id === gameState.selectedStock);
+            const shares = parseInt(document.getElementById('tradeShares').value) || 1;
+            
+            if (stock) {
+                const totalCost = stock.price * shares;
+                document.getElementById('totalCost').textContent = `$${totalCost.toFixed(2)}`;
+                document.getElementById('availableCash').textContent = `$${gameState.player.cash.toFixed(2)}`;
+                
+                const canBuy = totalCost <= gameState.player.cash;
+                document.getElementById('buyBtn').disabled = !canBuy;
+                
+                const position = gameState.positions.find(p => p.stockId === gameState.selectedStock);
+                document.getElementById('sellBtn').disabled = !position || position.shares === 0;
+            }
+        }
+
+        // Buy stock
+        function buyStock() {
+            const stock = gameState.stocks.find(s => s.id === gameState.selectedStock);
+            const shares = parseInt(document.getElementById('tradeShares').value) || 1;
+            
+            if (!stock) return;
+            
+            const totalCost = stock.price * shares;
+            if (totalCost > gameState.player.cash) {
+                showNotification('❌ Insufficient funds!', 'error');
+                return;
+            }
+            
+            gameState.player.cash -= totalCost;
+            
+            // Update or create position
+            const existingPosition = gameState.positions.find(p => p.stockId === gameState.selectedStock);
+            if (existingPosition) {
+                const newShares = existingPosition.shares + shares;
+                const newAvgPrice = ((existingPosition.avgBuyPrice * existingPosition.shares) + totalCost) / newShares;
+                
+                existingPosition.shares = newShares;
+                existingPosition.avgBuyPrice = newAvgPrice;
+                existingPosition.currentPrice = stock.price;
+                existingPosition.totalValue = newShares * stock.price;
+                existingPosition.profitLoss = (stock.price - newAvgPrice) * newShares;
+                existingPosition.profitLossPercent = ((stock.price - newAvgPrice) / newAvgPrice) * 100;
+            } else {
+                gameState.positions.push({
+                    stockId: stock.id,
+                    symbol: stock.symbol,
+                    shares: shares,
+                    avgBuyPrice: stock.price,
+                    currentPrice: stock.price,
+                    totalValue: totalCost,
+                    profitLoss: 0,
+                    profitLossPercent: 0
+                });
+            }
+            
+            // Add transaction
+            gameState.transactions.push({
+                id: Date.now().toString(),
+                stockId: stock.id,
+                symbol: stock.symbol,
+                type: 'buy',
+                shares: shares,
+                price: stock.price,
+                total: totalCost,
+                timestamp: new Date()
+            });
+            
+            calculatePortfolio();
+            updateTradingPanel();
+            showNotification(`✅ Bought ${shares} shares!`, 'success');
+        }
+
+        // Sell stock
+        function sellStock() {
+            const stock = gameState.stocks.find(s => s.id === gameState.selectedStock);
+            const position = gameState.positions.find(p => p.stockId === gameState.selectedStock);
+            const shares = Math.min(parseInt(document.getElementById('tradeShares').value) || 1, position.shares);
+            
+            if (!stock || !position || position.shares < shares) {
+                showNotification('❌ Cannot sell!', 'error');
+                return;
+            }
+            
+            const totalValue = stock.price * shares;
+            gameState.player.cash += totalValue;
+            
+            // Update or remove position
+            if (position.shares === shares) {
+                gameState.positions = gameState.positions.filter(p => p.stockId !== gameState.selectedStock);
+            } else {
+                position.shares -= shares;
+                position.currentPrice = stock.price;
+                position.totalValue = position.shares * stock.price;
+                position.profitLoss = (stock.price - position.avgBuyPrice) * position.shares;
+                position.profitLossPercent = ((stock.price - position.avgBuyPrice) / position.avgBuyPrice) * 100;
+            }
+            
+            // Add transaction
+            gameState.transactions.push({
+                id: Date.now().toString(),
+                stockId: stock.id,
+                symbol: stock.symbol,
+                type: 'sell',
+                shares: shares,
+                price: stock.price,
+                total: totalValue,
+                timestamp: new Date()
+            });
+            
+            calculatePortfolio();
+            updateTradingPanel();
+            showNotification(`✅ Sold ${shares} shares!`, 'success');
+        }
+
+        // Calculate portfolio
+        function calculatePortfolio() {
+            let portfolioValue = 0;
+            
+            gameState.positions.forEach(position => {
+                const stock = gameState.stocks.find(s => s.id === position.stockId);
+                if (stock) {
+                    position.currentPrice = stock.price;
+                    position.totalValue = position.shares * stock.price;
+                    position.profitLoss = (stock.price - position.avgBuyPrice) * position.shares;
+                    position.profitLossPercent = ((stock.price - position.avgBuyPrice) / position.avgBuyPrice) * 100;
+                    portfolioValue += position.totalValue;
+                }
+            });
+            
+            gameState.player.portfolioValue = portfolioValue;
+            gameState.player.totalValue = gameState.player.cash + portfolioValue;
+            
+            updateDisplay();
+        }
+
+        // Update display
+        function updateDisplay() {
+            document.getElementById('cashDisplay').textContent = `$${gameState.player.cash.toFixed(2)}`;
+            document.getElementById('portfolioDisplay').textContent = `$${gameState.player.portfolioValue.toFixed(2)}`;
+            document.getElementById('totalDisplay').textContent = `$${gameState.player.totalValue.toFixed(2)}`;
+            
+            const profitLoss = gameState.player.totalValue - 10000;
+            const profitLossPercent = ((profitLoss / 10000) * 100);
+            document.getElementById('plDisplay').textContent = `${profitLoss >= 0 ? '+' : ''}$${profitLoss.toFixed(2)} (${profitLossPercent.toFixed(1)}%)`;
+            document.getElementById('plDisplay').className = `text-lg font-bold ${profitLoss >= 0 ? 'text-emerald-400' : 'text-red-400'}`;
+        }
+
+        // Update ticker
+        function updateTicker() {
+            const ticker = document.getElementById('ticker');
+            ticker.innerHTML = gameState.stocks.map(stock => `
+                <span class="mx-8">
+                    <span class="font-bold">${stock.symbol}</span>: $${stock.price.toFixed(2)} 
+                    <span class="${stock.change >= 0 ? 'text-emerald-400' : 'text-red-400'}">
+                        (${stock.change >= 0 ? '+' : ''}${stock.changePercent.toFixed(2)}%)
+                    </span>
+                </span>
+            `).join('');
+        }
+
+        // Show notification
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type === 'success' ? 'glow-green' : 'glow-red'}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Event listeners
+        document.getElementById('tradeShares').addEventListener('input', updateTradingPanel);
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initGame);
+    </script>
+</body>
+</html>
