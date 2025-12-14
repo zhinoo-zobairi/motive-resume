@@ -157,12 +157,7 @@ resource "aws_apigatewayv2_route" "terminal_post_route" {
   target    = "integrations/${aws_apigatewayv2_integration.terminal_lambda_integration.id}"
 }
 
-# OPTIONS / - CORS preflight
-resource "aws_apigatewayv2_route" "terminal_options_route" {
-  api_id    = aws_apigatewayv2_api.terminal_api.id
-  route_key = "OPTIONS /"
-  target    = "integrations/${aws_apigatewayv2_integration.terminal_lambda_integration.id}"
-}
+# Note: OPTIONS handled automatically by cors_configuration on HTTP API
 
 # -----------------------------------------------------------------------------
 # Outputs
