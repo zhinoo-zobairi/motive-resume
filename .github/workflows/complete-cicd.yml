@@ -1,12 +1,7 @@
-name: Complete CI/CD Pipeline
+name: Complete CI/CD Pipeline (disabled)
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch:
 
 env:
   AWS_REGION: us-east-1
