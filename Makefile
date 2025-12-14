@@ -31,13 +31,13 @@ zip:
 # Check Lambda function status
 status:
 	@echo "📊 Checking Lambda function status..."
-	aws lambda get-function --function-name blackjack-game --region us-east-1 --query 'Configuration.{State:State,LastUpdateStatus:LastUpdateStatus,Runtime:Runtime,LastModified:LastModified}'
+	aws lambda get-function --function-name terminal-commands --region us-east-1 --query 'Configuration.{State:State,LastUpdateStatus:LastUpdateStatus,Runtime:Runtime,LastModified:LastModified}'
 
 # View recent Lambda logs
 logs:
 	@echo "📄 Fetching recent Lambda logs..."
-	aws logs describe-log-groups --log-group-name-prefix "/aws/lambda/blackjack-game" --region us-east-1
-	@echo "Use 'aws logs tail /aws/lambda/blackjack-game --follow' to follow logs in real-time"
+	aws logs describe-log-groups --log-group-name-prefix "/aws/lambda/terminal-commands" --region us-east-1
+	@echo "Use 'aws logs tail /aws/lambda/terminal-commands --follow' to follow logs in real-time"
 
 # Clean up build artifacts
 clean:

@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Secure deployment script for blackjack Lambda function
+# Deployment script for terminal commands Lambda function
 # Uses AWS credentials from ~/.aws/credentials
 
 set -e  # Exit on any error
 
 # Configuration
-FUNCTION_NAME="blackjack-game"
+FUNCTION_NAME="terminal-commands"
 LAMBDA_DIR="lambda"
 ZIP_FILE="lambda-function.zip"
 REGION="us-east-1"

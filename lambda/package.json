@@ -1,8 +1,8 @@
 {
-  "name": "blackjack-lambda",
+  "name": "terminal-lambda",
   "version": "1.0.0",
-  "description": "Serverless blackjack game Lambda function",
-  "main": "blackjack.js",
+  "description": "Terminal commands Lambda function",
+  "main": "index.js",
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",

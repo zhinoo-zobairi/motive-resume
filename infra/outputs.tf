@@ -1,1 +1,1 @@
-# Outputs moved to blackjack.tf for better organization
+# Outputs are defined in lambda.tf
