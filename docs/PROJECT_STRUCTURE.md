@@ -10,36 +10,33 @@ cloud-resume-challenge/
 │   └── workflows/
 │       └── complete-cicd.yml     # GitHub Actions CI/CD pipeline
 ├── docs/
-│   ├── BLACKJACK_README.md       # Blackjack game documentation
+│   ├── DEVELOPMENT.md            # Development guide
 │   └── PROJECT_STRUCTURE.md      # This file
 ├── infra/
-│   ├── modules/
-│   │   └── command_api/          # Terraform module for API Gateway
-│   ├── main.tf                   # Main Terraform configuration
+│   ├── main.tf                   # S3 and Route53 configuration
+│   ├── lambda.tf                 # Lambda and API Gateway configuration
 │   ├── provider.tf               # AWS provider configuration
 │   ├── variables.tf              # Terraform variables
-│   └── outputs.tf                # Terraform outputs
+│   ├── outputs.tf                # Terraform outputs
+│   └── backend.tf                # State backend configuration
 ├── lambda/
-│   ├── __tests__/                # Jest unit tests
-│   ├── lib/                      # Lambda function libraries
-│   ├── blackjack.js              # Main Lambda handler
-│   ├── commands.js               # Terminal commands handler
 │   ├── index.js                  # Lambda entry point
+│   ├── commands.js               # Terminal commands handler
 │   ├── package.json              # Node.js dependencies
 │   ├── jest.config.js            # Jest testing configuration
-│   └── .eslintrc.js              # ESLint code quality configuration
+│   └── .eslintrc.js              # ESLint configuration
 ├── scripts/
-│   ├── deploy.sh                 # Manual deployment script
-│   └── deploy-blackjack.sh       # Blackjack-specific deployment
+│   └── deploy.sh                 # Manual deployment script
 ├── website/
 │   ├── css/                      # Stylesheets
 │   ├── js/                       # JavaScript files
 │   ├── images/                   # Images and assets
-│   └── icon-fonts/               # Font Awesome icons
-├── .env                          # Environment variables (gitignored)
+│   ├── icon-fonts/               # Font icons
+│   └── index.html                # Main terminal interface
+├── .env.example                  # Environment template
 ├── .gitignore                    # Git ignore patterns
 ├── Makefile                      # Build automation
-└── README.md                     # Main project documentation
+└── README.md                     # Project documentation
 ```
 
 ## Key Components

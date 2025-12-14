@@ -55,9 +55,7 @@ This started as the [Cloud Resume Challenge](https://cloudresumechallenge.dev/)�
 - **Interactive Terminal** — Full bash-like experience with command history and tab completion
 - **Explore Commands** — Type `help` to see all available commands
 - **View Architecture** — See the live infrastructure with `stack` command
-- **Play Blackjack** — Full-featured casino game with real game logic
 - **Contact Me** — Use `offer` to send your details via Zapier integration
-- **Track Analytics** — Visitor counter stored in DynamoDB
 
 ---
 
@@ -99,7 +97,6 @@ This started as the [Cloud Resume Challenge](https://cloudresumechallenge.dev/)�
 |----------|----------|
 | **[Development Guide](docs/DEVELOPMENT.md)** | Complete setup instructions and development workflow |
 | **[Project Structure](docs/PROJECT_STRUCTURE.md)** | How the codebase is organized |
-| **[Blackjack Game](docs/BLACKJACK_README.md)** | Full-featured casino game implementation |
 
 ---
 

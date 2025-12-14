@@ -75,7 +75,7 @@ terraform apply
 ```bash
 # Test locally
 cd lambda
-node -e "console.log(require('./blackjack.js'))"
+node -e "console.log(require('./index.js'))"
 
 # Deploy manually (for testing)
 ../scripts/deploy.sh
@@ -147,9 +147,6 @@ npx serve .
 ```bash
 # Deploy Lambda function
 ./scripts/deploy.sh
-
-# Deploy Blackjack specifically
-./scripts/deploy-blackjack.sh
 ```
 
 ## Troubleshooting
@@ -171,10 +168,10 @@ npx serve .
 3. **Lambda deployment failures**
    ```bash
    # Check function exists
-   aws lambda get-function --function-name blackjack-game
+   aws lambda get-function --function-name terminal-commands
    
    # Check logs
-   aws logs describe-log-groups --log-group-name-prefix /aws/lambda/blackjack-game
+   aws logs describe-log-groups --log-group-name-prefix /aws/lambda/terminal-commands
    ```
 
 4. **Test failures**
@@ -192,10 +189,10 @@ npx serve .
    ```bash
    cd lambda
    node -e "
-   const handler = require('./blackjack.js').handler;
+   const handler = require('./index.js').handler;
    handler({
-     httpMethod: 'POST',
-     body: JSON.stringify({action: 'newGame', bet: 100}),
+     requestContext: { http: { method: 'POST' } },
+     body: JSON.stringify({command: 'help'}),
      headers: {}
    }).then(console.log);
    "
@@ -203,7 +200,7 @@ npx serve .
 
 2. **CloudWatch Logs**
    ```bash
-   aws logs tail /aws/lambda/blackjack-game --follow
+   aws logs tail /aws/lambda/terminal-commands --follow
    ```
 
 3. **Infrastructure debugging**
