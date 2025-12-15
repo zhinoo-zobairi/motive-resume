@@ -51,6 +51,7 @@ exports.handler = async (event) => {
       '',
       'Core',
       '  whoami        – context and background',
+      '  shadow        – what I want to learn during shadowing and why',
       '  thinking      – how I approach problems',
       '  work          – systems and projects I’ve worked on',
       '  stack         – tools I’ve used',
@@ -74,14 +75,32 @@ exports.handler = async (event) => {
     'focus: backend systems'
   ].join('\n')
 },
-
-    thinking: {
+  shadow: {
+  type: 'text',
+  body: [
+    'Shadowing request: 4 to 8 weeks',
+    '',
+    'What I want to learn:',
+    '- How your team designs and operates backend systems in production',
+    '- How you approach correctness, security, and long-term architecture decisions',
+    '- How ownership looks in your environment (on-call signals, incidents, tradeoffs)',
+    '',
+    'Growth area (where I want to level up):',
+    '- Production-grade backend depth: design tradeoffs, reliability patterns, and security-first thinking',
+    '',
+    'Intent:',
+    'Shadowing is my bridge into the team. The objective is a full-time backend position once my student role ends.'
+  ].join('\n')
+},
+  thinking: {
   type: 'text',
   body: [
     'I approach new problems with an open and curious mindset.',
     '',
-    'I’m comfortable being trained, adjusting my understanding, and refining how',
-    'I think.',
+    'I’m comfortable being trained, adjusting my understanding, and refining how I think.',
+    '',
+    'To me, most things are figureoutable with the right mental model and enough iteration.',
+    'That belief keeps me calm under ambiguity and persistent under pressure.',
     '',
     'I’m resourceful in how I reason things through, and I keep asking “why”',
     'until I can explain the idea back to myself clearly and without gaps.'
@@ -90,8 +109,10 @@ exports.handler = async (event) => {
     work: {
   type: 'text',
   body: [
-    'Recently, I’ve been working on wiring APIs, working with cloud infrastructure,',
-    'and building small AI agents end to end to understand how the pieces fit together.',
+    'Recently, I’ve been working on:',
+      '- Wiring APIs and integration flows',
+      '- Working with cloud infrastructure',
+      '- Building small AI agents end to end to understand how the pieces fit together',
   ].join('\n')
 },
   stack: {
@@ -112,43 +133,44 @@ exports.handler = async (event) => {
   growth: {
   type: 'text',
   body: [
-    'Right now, I’m focused on growing into larger and more complex systems.',
-    '',
-    'I’m intentionally not optimizing for comfort. I’m looking for a team where I can',
-    'learn from experienced engineers and architects, and gradually take on more',
-    'ownership as my understanding deepens.',
-    '',
-    'I’m especially interested in backend-heavy environments including systems where machine learning',
-    'components are part of a larger architecture.'
+    'I’m intentionally not optimizing for comfort.',
+      '',
+      'I’m looking for a team where I can:',
+      '- Learn from experienced engineers and architects',
+      '- Grow into complex systems and gradually take on more ownership',
+      '',
+      'I’m especially interested in backend-heavy environments, including systems where',
+      'machine learning components are part of a larger architecture.'
 
   ].join('\n')
 },
-    principles: {
+   principles: {
   type: 'text',
   body: [
     'My internal KPI is clarity.',
     '',
-    'When something feels hard, I don’t interpret that as incompetence.',
-    'I treat it as a signal that my mental model is incomplete.',
-    'So I slow down, zoom in, and break down the problem until it makes sense.',
+    'Friction is a signal, not a blocker:',
+    '- When something feels hard, I don’t interpret that as incompetence',
+    '- I treat it as a signal that my mental model is incomplete',
+    '- So I slow down, zoom in, and break down the problem until it makes sense',
     '',
-    'Documentation is leverage for me.',
-    'I write things down to externalize memory, compress future thinking,',
-    'and make knowledge transferable to teammates and future-me.',
-    'GitHub issues, Markdown notes, structured breakdowns: this is how I scale myself.',
+    'Documentation is leverage for me:',
+    '- I write things down to externalize memory, compress future thinking,',
+    '  and make knowledge transferable to teammates and future-me',
+    '- GitHub issues, Markdown notes, structured breakdowns: this is how I scale myself',
     '',
-    'I prefer truth over comfort.',
-    'I explicitly push back on vague or hand-wavy explanations.',
-    'Clear language matters because vague wording hides vague thinking.',
+    'Truth over comfort:',
+    '- I explicitly push back on vague or hand-wavy explanations',
+    '- Clear language matters because vague wording hides vague thinking',
     '',
-    'I’m deliberate about ROI.',
-    'I don’t chase hype blindly. I weigh value.',
+    'I’m deliberate about ROI:',
+    '- I don’t chase hype blindly. I weigh value',
     '',
-    'I trained myself to rely on discipline instead of motivation.',
-    'That’s where my confidence comes from.'
+    'Discipline over motivation:',
+    '- I trained myself to rely on discipline instead of motivation',
+    '- That’s where my confidence comes from'
   ].join('\n')
 },
-
 
     github: redirect('https://github.com/zhinoo-zobairi'),
     linkedin: redirect('https://www.linkedin.com/in/zhinoo-zobairi'),
