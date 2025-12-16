@@ -57,6 +57,7 @@ exports.handler = async (event) => {
       '  stack         – tools I’ve used',
       '  growth        – what I’m optimizing for next',
       '  principles    – how I work with others',
+      '  whyme         – how the pieces connect, in one place',
       '',
       'Links',
       '  github        – open GitHub profile',
@@ -169,6 +170,40 @@ exports.handler = async (event) => {
     'Discipline over motivation:',
     '- I trained myself to rely on discipline instead of motivation',
     '- That’s where my confidence comes from'
+  ].join('\n')
+},
+whyme: {
+  type: 'text',
+  body: [
+    'This space exists for one reason: coherence.',
+    '',
+    'The commands here describe different aspects of how I work, learn, and think.',
+    'This one connects them.',
+    'In my studies and work, I consistently prefer demanding content over easy wins.',
+    'If I can choose between a simple course with guaranteed grades or a difficult one with real depth and risk,',
+    'I choose the difficult option. I do not optimize for optics.',
+    '',
+    'That decision pattern carries into how I work.',
+    '',
+    'I believe most problems are figureoutable with the right decomposition.',
+    '',
+    'I invest heavily in clarity.',
+    'I document, externalize reasoning, and push for precise language because',
+    'vague explanations create hidden risk in systems and teams.',
+    '',
+    'Right now, I am transitioning from a working student role toward a full-time backend position.',
+    '',
+    'Shadowing is part of that transition.',
+    'I want to understand how experienced engineers reason in production contexts',
+    'before I take on deeper ownership.',
+    '',
+    'What you get is someone who:',
+    '- Learns fast',
+    '- Prioritizes long-term over short-term convenience',
+    '',
+    'If you read the other commands, you will find details.', 
+    '',
+    'I am optimizing for becoming the kind of engineer you trust with complex systems.'
   ].join('\n')
 },
 
